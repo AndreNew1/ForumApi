@@ -1,0 +1,37 @@
+{
+  "Topicos": [
+    {
+      "Titulo": "naruto é duro as vezes?",
+      "Texto": "talvez si talvez não aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "Tipo": "duvida",
+      "Usuario": {
+        "Nome": "andre",
+        "Email": "elias.victor@gmail.com"
+      },
+      "Resultado": 0.0,
+      "Status": "aberto",
+      "Id": "4687d8e1-13c9-4bc7-8dca-3ecbc72c8502",
+      "DataCadastro": "2019-09-12T16:30:11.2182277-03:00"
+    }
+  ],
+  "Comentarios": [],
+  "Usuarios": [
+    {
+      "Email": "elias.victor@gmail.com",
+      "Senha": "andre123",
+      "ConfirmaSenha": "andre123",
+      "Nome": "andre",
+      "Id": "88bf9229-8d9a-400e-b455-1209b9c32939",
+      "DataCadastro": "2019-09-12T15:00:33.5094734-03:00"
+    },
+    {
+      "Email": "elias.victor@hotmail.com",
+      "Senha": "andre123",
+      "ConfirmaSenha": "andre123",
+      "Nome": "andre",
+      "Id": "d6bab702-4d61-423e-97a1-e178b89f984b",
+      "DataCadastro": "2019-09-12T17:14:22.279102-03:00"
+    }
+  ],
+  "Votos": []
+}
