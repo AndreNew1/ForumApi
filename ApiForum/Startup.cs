@@ -26,7 +26,7 @@ namespace ApiForum
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMvc().AddJsonOptions(opts =>
             {
-                opts.SerializerSettings.DateFormatString = "dd/MM/yyyy";            
+                opts.SerializerSettings.DateFormatString = "dd/MM/yyyy"; 
             });
 
             var config = new MapperConfiguration(opts =>
@@ -43,10 +43,6 @@ namespace ApiForum
                 .ForMember(d => d.Email, s => s.MapFrom(sorc => sorc.Email))
                 .ForMember(d => d.Nome, s => s.MapFrom(sorc => sorc.Nome));
 
-                opts.CreateMap<Topico, Topico>()
-                .ForMember(d => d.Texto, s => s.Condition(sorc => sorc.Texto != null && sorc.Texto.Length > 49))
-                .ForMember(d => d.Titulo, s => s.Condition(sorc => sorc.Titulo != null && sorc.Titulo.Length > 8 && sorc.Titulo.Length < 250))
-                .ForMember(d=>d.Status,s=>s.Condition(sorc=>sorc.Status!="fechado"||sorc.Status!="aberto"));
             }) ; 
 
             IMapper mapper = config.CreateMapper();

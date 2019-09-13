@@ -22,19 +22,43 @@ namespace ApiForum.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastroTopico([FromBody] TopicoView topico,[FromHeader] string tokenUsuario)
+        public IActionResult CadastroTopico([FromBody] TopicoView topico, [FromHeader] string tokenUsuario)
         {
-            var Resultado = new TopicoCore(topico,Mapper).RegistraTopico(tokenUsuario);
+            var Resultado = new TopicoCore(topico, Mapper).RegistraTopico(tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpGet]
-        public  async Task<IActionResult> BuscarTodosTopicos()
+        public IActionResult BuscarTodosTopicos([FromHeader]string tokenUsuario)
         {
-            return default;
+            var Resultado = new TopicoCore().BuscarTodosTopicos(tokenUsuario);
+
+            return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
-       
+        [HttpGet("{id}")]
+        public IActionResult BuscarUmTopico(string id ,[FromHeader]string tokenUsuario)
+        {
+            var Resultado = new TopicoCore().BuscarUmTopico(id, tokenUsuario);
+
+            return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletarTopico(string id,[FromHeader] string tokenUsuario)
+        {
+            var Resultado = new TopicoCore().DeletarTopico(id, tokenUsuario);
+
+            return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult EditarTopico(string id,[FromBody]TopicoView edit,[FromHeader] string tokenUsuario)
+        {
+            var Resultado = new TopicoCore(edit,Mapper).EditarTopicos(id, tokenUsuario);
+
+            return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
+        }
     }
 }

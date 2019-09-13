@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
+﻿using System;
 
 namespace Model
 {
@@ -10,6 +6,6 @@ namespace Model
     {
        
         public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime DataCadastro { get;  set; } = DateTime.Now;
+        public DateTime DataCadastro { get; set; } = DateTime.Now;
     }
 }

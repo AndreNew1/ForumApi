@@ -48,7 +48,7 @@ namespace Core
 
         public Retorno Votar(string tokenUsuario)
         {
-            if (!Guid.TryParse(tokenUsuario, out Guid usuario) && Db.Usuarios.SingleOrDefault(temp => temp.Id == usuario) != null)
+            if (!Guid.TryParse(tokenUsuario, out Guid usuario) || Db.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
 
             _Voto.IdUsuario = usuario;

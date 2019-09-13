@@ -8,9 +8,9 @@ namespace Model
     {
         public Guid PublicacaoId { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Guid ComentarioId { get; set; }
+        public string ComentarioId { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Guid CitacaoId { get; set; }
+        public string CitacaoId { get; set; }
         public Guid UsuarioId { get; set; }
         public string Mensagem { get; set; }
         public float Resultado { get; set; }
