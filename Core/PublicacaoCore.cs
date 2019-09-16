@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Util;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -9,27 +10,23 @@ using System.Text;
 
 namespace Core
 {
-    public class TopicoCore:AbstractValidator<Topico>
+    public class PublicacaoCore:AbstractValidator<Publicacao>
     {
-        private Topico _Topico { get; set; }
+        private Publicacao _Topico { get; set; }
         private IMapper Mapper { get; set; }
-        private Sistema DB { get; set; }
+        private BancoContexto DB { get; set; }
 
-        public TopicoCore()
+        public PublicacaoCore(BancoContexto banco)
         {
-            DB = Arquivo.LerArquivo();
-
-            DB = DB ?? new Sistema();
+            DB = banco;
         }
-        public TopicoCore(TopicoView topico,IMapper mapper)
+        public PublicacaoCore(Publicacao topico,IMapper mapper,BancoContexto banco)
         {
-            DB = Arquivo.LerArquivo();
-
-            DB = DB ?? new Sistema();
+            DB = banco;
 
             Mapper = mapper;
 
-            _Topico = Mapper.Map<TopicoView,Topico>(topico);
+            _Topico = topico;
 
             RuleFor(e => e.Tipo)
                 .NotNull()
@@ -58,62 +55,52 @@ namespace Core
 
         public Retorno RegistraTopico(string tokenUsuario)
         {
-            if (!Guid.TryParse(tokenUsuario, out Guid usuario) && DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
+            if (!Guid.TryParse(tokenUsuario, out Guid usuario) || DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
 
             var Validade = Validate(_Topico);
 
             if (!Validade.IsValid) return new Retorno { Status = false, Resultado = Validade.Errors.Select(c => c.ErrorMessage) };
 
-            _Topico.Usuario = Mapper.Map<UsuarioFake>(DB.Usuarios.Single(temp => temp.Id == usuario));
+            _Topico.UsuarioId = usuario;
 
             if (_Topico.Tipo.ToLower() == "duvida")
                 _Topico.Status = "aberto";
             else
                 _Topico.Status = null;
             
-            DB.Topicos.Add(_Topico);
+            DB.Publicacaos.Add(_Topico);
 
-            Arquivo.Escrita(DB);
+            
+            DB.SaveChangesAsync();
+
             return new Retorno { Status = true, Resultado = _Topico };
         }
 
         public Retorno BuscarUmTopico(string id,string tokenUsuario)
         {
-            if (!Guid.TryParse(tokenUsuario, out Guid usuario) && DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
+            if (!Guid.TryParse(tokenUsuario, out Guid usuario) || DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
 
             try
             {
-                _Topico = DB.Topicos.Single(s => s.Id == Guid.Parse(id));
+                _Topico = DB.Publicacaos.Include(c=>c.Comentarios).Single(s => s.Id == Guid.Parse(id));
 
-                _Topico.Comentarios = DB.Comentarios.Where(s => s.PublicacaoId == _Topico.Id).ToList();
-
-
-
-
-
-                return new Retorno { Status = true, Resultado = new List<Topico> { _Topico } };
+                return new Retorno { Status = true, Resultado = new List<Publicacao> { _Topico } };
             }
             catch (Exception)
             {
                 return new Retorno { Status = false, Resultado = new List<string> { " Id informado não existe" } };
             }
 
-
         }
         public Retorno BuscarTodosTopicos(string tokenUsuario)
         {
-            if (!Guid.TryParse(tokenUsuario, out Guid usuario) && DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario)==null)
+            if (!Guid.TryParse(tokenUsuario, out Guid usuario) || DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario)==null)
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
 
 
-            var Topicos = DB.Topicos;
-
-            foreach(var topico in Topicos)
-            {
-                topico.Comentarios = DB.Comentarios.Where(s => s.PublicacaoId == topico.Id&&s.ComentarioId==null).ToList();
-            }
+            var Topicos = DB.Publicacaos.Include(x=>x.Comentarios).ToList();
 
             return Topicos.Count != 0 ? new Retorno { Status = true, Resultado = Topicos } : new Retorno { Status = false, Resultado = new List<string> { "Não existe nenhum topico" } };
         }
@@ -128,14 +115,14 @@ namespace Core
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
             try
             {
-                var Topico = DB.Topicos.SingleOrDefault(temp => temp.Id == Guid.Parse(id)&&temp.Usuario.Email==Usuario.Email);
+                var Topico = DB.Publicacaos.SingleOrDefault(temp => temp.Id == Guid.Parse(id)&&temp.Usuario.Email==Usuario.Email);
 
                 if (Topico == null)
                     return new Retorno { Status = false, Resultado = new List<string> { "Nenhum topico encontrado" } };
 
                 if (_Topico.Titulo != null)
                 {
-                    if (_Topico.Titulo.Length < 8 && _Topico.Titulo.Length > 250)
+                    if (_Topico.Titulo.Length < 8 || _Topico.Titulo.Length > 250)
                         return new Retorno { Status = false, Resultado = new List<string> { "Titulo invalido" } };
 
                     Topico.Titulo = _Topico.Titulo;
@@ -172,11 +159,10 @@ namespace Core
 
             try
             {
-                _Topico = DB.Topicos.Single(temp => temp.Id == Guid.Parse(id)&&temp.Usuario.Email==Usuario.Email);
+                _Topico = DB.Publicacaos.Single(temp => temp.Id == Guid.Parse(id)&&temp.Usuario.Email==Usuario.Email);
 
-                DB.Topicos.Remove(_Topico);
+                DB.Publicacaos.Remove(_Topico);
 
-                Arquivo.Escrita(DB);
 
                 return new Retorno { Status = true, Resultado = new List<string> { "Topico deletado" } };
 

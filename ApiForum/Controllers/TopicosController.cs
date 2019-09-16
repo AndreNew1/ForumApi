@@ -15,48 +15,50 @@ namespace ApiForum.Controllers
     public class TopicosController : ControllerBase
     {
         private IMapper Mapper { get; set; }
+        private BancoContexto Context { get; set; }
 
-        public TopicosController(IMapper mapper)
+        public TopicosController(IMapper mapper,BancoContexto banco)
         {
             Mapper = mapper;
+            Context = banco;
         }
 
         [HttpPost]
-        public IActionResult CadastroTopico([FromBody] TopicoView topico, [FromHeader] string tokenUsuario)
+        public async Task<IActionResult> CadastroTopico([FromBody] Publicacao topico, [FromHeader] string tokenUsuario)
         {
-            var Resultado = new TopicoCore(topico, Mapper).RegistraTopico(tokenUsuario);
+            var Resultado = new PublicacaoCore(topico, Mapper,Context).RegistraTopico(tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpGet]
-        public IActionResult BuscarTodosTopicos([FromHeader]string tokenUsuario)
+        public async Task<IActionResult> BuscarTodosTopicos([FromHeader]string tokenUsuario)
         {
-            var Resultado = new TopicoCore().BuscarTodosTopicos(tokenUsuario);
+            var Resultado = new PublicacaoCore(Context).BuscarTodosTopicos(tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpGet("{id}")]
-        public IActionResult BuscarUmTopico(string id ,[FromHeader]string tokenUsuario)
+        public async Task<IActionResult> BuscarUmTopico(string id ,[FromHeader]string tokenUsuario)
         {
-            var Resultado = new TopicoCore().BuscarUmTopico(id, tokenUsuario);
+            var Resultado = new PublicacaoCore(Context).BuscarUmTopico(id, tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeletarTopico(string id,[FromHeader] string tokenUsuario)
+        public async Task<IActionResult> DeletarTopico(string id,[FromHeader] string tokenUsuario)
         {
-            var Resultado = new TopicoCore().DeletarTopico(id, tokenUsuario);
+            var Resultado = new PublicacaoCore(Context).DeletarTopico(id, tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpPut("{id}")]
-        public IActionResult EditarTopico(string id,[FromBody]TopicoView edit,[FromHeader] string tokenUsuario)
+        public async Task<IActionResult> EditarTopico(string id,[FromBody]Publicacao edit,[FromHeader] string tokenUsuario)
         {
-            var Resultado = new TopicoCore(edit,Mapper).EditarTopicos(id, tokenUsuario);
+            var Resultado = new PublicacaoCore(edit,Mapper,Context).EditarTopicos(id, tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }

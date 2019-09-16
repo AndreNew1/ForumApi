@@ -15,47 +15,47 @@ namespace ApiForum.Controllers
     public class ComentariosController : ControllerBase
     {
         private IMapper Mapper { get; set; }
-        public ComentariosController(IMapper mapper)
+        private BancoContexto Context { get; set; }
+        public ComentariosController(IMapper mapper,BancoContexto banco)
         {
             Mapper = mapper;
+            Context = banco;
         }
 
         [HttpPost]
-        public IActionResult Comentar([FromBody] Comentario comentario, [FromHeader]string tokenUsuario)
+        public async Task<IActionResult> Comentar([FromBody] Comentarios comentario, [FromHeader]string tokenUsuario)
         {
-            var Resultado = new ComentarioCore(comentario).Comentar(tokenUsuario);
+            var Resultado = new ComentarioCore(comentario,Context).Comentar(tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpPut("{id}")]
-        public IActionResult EditarComentario([FromBody] ComentarioEdit comentario,[FromHeader]string tokenUsuario,string id)
+        public async Task<IActionResult> EditarComentario([FromBody] Comentarios comentario,[FromHeader]string tokenUsuario,string id)
         {
-            var Resultado = new ComentarioCore(Mapper).EditarComentario(id, tokenUsuario, comentario);
+            var Resultado = new ComentarioCore(Mapper,Context).EditarComentario(id, tokenUsuario, comentario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpPost("votar")]
-        public IActionResult VotarComentario([FromBody] ViewVoto voto, [FromHeader]string tokenUsuario)
+        public async Task<IActionResult> VotarComentario([FromBody] ViewVoto voto, [FromHeader]string tokenUsuario)
         {
-            var Resultado = new VotacaoCore(voto, Mapper).Votar(tokenUsuario);
-
-            return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
+            return default;
         }
 
         [HttpGet("{id}")]
-        public IActionResult BuscaUmComentario(string id,[FromHeader]string tokenUsuario)
+        public async Task<IActionResult> BuscaUmComentario(string id,[FromHeader]string tokenUsuario)
         {
-            var Resultado = new ComentarioCore(Mapper).RetornaComentario(id, tokenUsuario);
+            var Resultado = new ComentarioCore(Mapper,Context).RetornaComentario(id, tokenUsuario);
 
             return Resultado.Status ? Ok(Resultado) : (IActionResult)BadRequest(Resultado);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletar(string id,[FromHeader]string tokenUsuario)
+        public async Task<IActionResult> Deletar(string id,[FromHeader]string tokenUsuario)
         {
-            var Resultado = new ComentarioCore(Mapper).DeletarComentario(id, tokenUsuario);
+            var Resultado = new ComentarioCore(Mapper,Context).DeletarComentario(id, tokenUsuario);
 
             return Resultado.Status ? Accepted(Resultado) : (IActionResult)BadRequest(Resultado);
         }

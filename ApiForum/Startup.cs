@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Model;
@@ -22,6 +23,8 @@ namespace ApiForum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<BancoContexto>(options => options.UseSqlServer(Configuration.GetConnectionString("ForumApi")), ServiceLifetime.Scoped);
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMvc().AddJsonOptions(opts =>
@@ -33,16 +36,6 @@ namespace ApiForum
             {
                 opts.CreateMap<Usuario, UsuarioToken>()
                 .ForMember(d => d.TokenUsuario, s => s.MapFrom(temp => temp.Id));
-
-                opts.CreateMap<TopicoView, Topico>();
-
-                opts.CreateMap<ViewVoto, Votacao>()
-                .ForMember(d => d.VotacaoRelacionada, s => s.MapFrom(sorc => sorc.ComentarioId));
-
-                opts.CreateMap<Usuario, UsuarioFake>()
-                .ForMember(d => d.Email, s => s.MapFrom(sorc => sorc.Email))
-                .ForMember(d => d.Nome, s => s.MapFrom(sorc => sorc.Nome));
-
             }) ; 
 
             IMapper mapper = config.CreateMapper();

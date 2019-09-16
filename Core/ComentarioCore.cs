@@ -8,25 +8,20 @@ using System.Linq;
 
 namespace Core
 {
-    public class ComentarioCore:AbstractValidator<Comentario>
+    public class ComentarioCore:AbstractValidator<Comentarios>
     {
-        private Comentario _Comentario { get; set; }
+        private Comentarios _Comentario { get; set; }
         private IMapper Mapper { get; set; }
-        private Sistema DB { get; set; }
+        private BancoContexto DB { get; set; }
 
-        public ComentarioCore(IMapper mapper)
+        public ComentarioCore(IMapper mapper,BancoContexto banco)
         {
-            DB = Arquivo.LerArquivo();
-
-            DB = DB ?? new Sistema();
-
+            DB = banco;
             Mapper = mapper;
         }
-        public ComentarioCore(Comentario comentario)
+        public ComentarioCore(Comentarios comentario,BancoContexto banco)
         {
-            DB = Arquivo.LerArquivo();
-
-            DB = DB ?? new Sistema();
+            DB = banco;
 
             _Comentario = comentario;
 
@@ -38,7 +33,7 @@ namespace Core
             RuleFor(e => e.PublicacaoId)
                 .NotNull()
                 .WithMessage("PublicacaoId não pode ser nulo")
-                .Must(temp => DB.Topicos.SingleOrDefault(x => x.Id == temp) != null)
+                .Must(temp => DB.Publicacaos.SingleOrDefault(x => x.Id == temp) != null)
                 .WithMessage("Publicacao não existe");
 
 
@@ -54,23 +49,12 @@ namespace Core
             if (!validade.IsValid)
                 return new Retorno { Status = false, Resultado = validade.Errors.Select(c => c.ErrorMessage) };
 
-            if (_Comentario.CitacaoId != null)
-            {
-                if (!Guid.TryParse(_Comentario.CitacaoId, out Guid comentarioId) || DB.Comentarios.SingleOrDefault(temp => temp.Id == comentarioId) == null)
-                    return new Retorno { Status = false, Resultado = new List<string> { "Citacaoid não existe" } };
-            }
-
-            if (_Comentario.ComentarioId != null)
-            {
-                if (!Guid.TryParse(_Comentario.ComentarioId, out Guid comentarioId) || DB.Comentarios.SingleOrDefault(temp => temp.Id == comentarioId) == null)
-                    return new Retorno { Status = false, Resultado = new List<string> { "ComentarioId não existe" } };
-            }
 
             _Comentario.UsuarioId = usuario;
 
             DB.Comentarios.Add(_Comentario);
 
-            Arquivo.Escrita(DB);
+            DB.SaveChangesAsync();
 
             return new Retorno { Status = true, Resultado = new List<string> {"Comentario cadastrado com sucesso" } };
         }
@@ -90,7 +74,7 @@ namespace Core
             }
         }
 
-        public Retorno EditarComentario(string id,string tokenUsuario,ComentarioEdit comentario)
+        public Retorno EditarComentario(string id,string tokenUsuario,Comentarios comentario)
         {
             if (!Guid.TryParse(tokenUsuario, out Guid usuario) || DB.Usuarios.SingleOrDefault(temp => temp.Id == usuario) == null)
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
@@ -104,10 +88,8 @@ namespace Core
 
                 if (comentario.CitacaoId != null)
                 {
-                    if (!Guid.TryParse(comentario.CitacaoId, out Guid comentarioid) && DB.Comentarios.SingleOrDefault(temp => temp.Id == comentarioid) == null)
+                    if (DB.Comentarios.SingleOrDefault(temp => temp.Id == _Comentario.ComentarioId) == null)
                         return new Retorno { Status = false, Resultado = new List<string> { "Citação não existe" } };
-
-                   _Comentario.CitacaoId = comentario.CitacaoId;
                 }
                 if (comentario.Mensagem != null)
                 {
@@ -136,12 +118,8 @@ namespace Core
             {
                 _Comentario = DB.Comentarios.Single(s => s.Id == Guid.Parse(id));
 
-                if (DB.Comentarios.Where(s => Guid.Parse(s.ComentarioId) == _Comentario.Id) != null || DB.Comentarios.Where(s => Guid.Parse(s.CitacaoId) == _Comentario.Id) != null)
-                    return new Retorno { Status = false, Resultado = new List<string> { "Comentario não pode ser apagado pois é citado ou ja possue uma ou mais comentarios" } };
-
                 DB.Comentarios.Remove(_Comentario);
 
-                Arquivo.Escrita(DB);
 
                 return new Retorno { Status = true, Resultado = new List<string> { "Comentario apagado" } };
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Core\\Core.csproj": {}
+    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Core\\Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Core\\Core.csproj": {
+    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Core\\Core.csproj",
+        "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Core\\Core.csproj",
         "packagesPath": "C:\\Users\\Treinamento 2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Core\\obj\\",
+        "outputPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -30,8 +30,8 @@
         "frameworks": {
           "netcoreapp2.2": {
             "projectReferences": {
-              "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\Model.csproj": {
-                "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\Model.csproj"
+              "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\Model.csproj": {
+                "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\Model.csproj"
               }
             }
           }
@@ -53,6 +53,24 @@
               "target": "Package",
               "version": "[8.4.0, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
             "Microsoft.NETCore.App": {
               "suppressParent": "All",
               "target": "Package",
@@ -72,14 +90,14 @@
         }
       }
     },
-    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\Model.csproj": {
+    "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\Model.csproj",
+        "projectUniqueName": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\Model.csproj",
         "projectName": "Model",
-        "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\Model.csproj",
+        "projectPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\Model.csproj",
         "packagesPath": "C:\\Users\\Treinamento 2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\Model\\obj\\",
+        "outputPath": "C:\\Users\\Treinamento 2\\Desktop\\ApiForum\\ForumApi\\Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -112,6 +130,24 @@
             "FluentValidation": {
               "target": "Package",
               "version": "[8.4.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.6, )"
             },
             "Microsoft.NETCore.App": {
               "suppressParent": "All",

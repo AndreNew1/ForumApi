@@ -12,22 +12,18 @@ namespace Core
     public class UsuarioCore : AbstractValidator<Usuario>
     {
         private Usuario _Usuario { get; set; }
-        private Sistema Db { get; set; }
+        private BancoContexto Db { get; set; }
         private IMapper Mapper { get; set; }
 
-        public UsuarioCore(IMapper mapper)
+        public UsuarioCore(IMapper mapper,BancoContexto banco)
         {
-            Db = Arquivo.LerArquivo();
-
-            Db = Db ?? new Sistema();
+            Db = banco;
 
             Mapper = mapper;
         }
-        public UsuarioCore(Usuario usuario)
+        public UsuarioCore(Usuario usuario,BancoContexto banco)
         {
-            Db = Arquivo.LerArquivo();
-
-            Db = Db ?? new Sistema();
+            Db = banco;
 
             _Usuario = usuario;
 
@@ -68,7 +64,7 @@ namespace Core
 
             Db.Usuarios.Add(_Usuario);
 
-            Arquivo.Escrita(Db);
+            Db.SaveChangesAsync();
 
             return new Retorno { Status = true, Resultado = new List<string> { "Cadastro efetuado com sucesso" } };
         }
@@ -85,26 +81,6 @@ namespace Core
             catch (Exception)
             {
                 return new Retorno { Status = false, Resultado = new List<string> { "Email Incorreto" } };
-            }
-
-        }
-
-        public Retorno DeletaUsuario(string tokenUsuario,LoginView Usuario)
-        {
-            if (!Guid.TryParse(tokenUsuario, out Guid usuario) && Db.Usuarios.SingleOrDefault(temp => temp.Id == usuario) != null)
-                return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
-
-            try
-            {
-                _Usuario = Db.Usuarios.Single(s => s.Email == Usuario.Login && _Usuario.Senha == s.Senha);
-
-                Db.Usuarios.Remove(_Usuario);
-
-                return new Retorno { Status = true, Resultado = new List<string> { "Usuario Deletado" } };
-            }
-            catch
-            {
-                return new Retorno { Status = false, Resultado = new List<string> { "Email/Senha Incorretos" } };
             }
 
         }
