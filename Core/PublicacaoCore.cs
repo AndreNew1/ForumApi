@@ -84,7 +84,7 @@ namespace Core
 
             try
             {
-                _Topico = DB.Publicacaos.Include(c=>c.Comentarios).Single(s => s.Id == Guid.Parse(id));
+                _Topico = DB.Publicacaos.Include(c=>c.Comentario).Single(s => s.Id == Guid.Parse(id));
 
                 return new Retorno { Status = true, Resultado = new List<Publicacao> { _Topico } };
             }
@@ -100,7 +100,7 @@ namespace Core
                 return new Retorno { Status = false, Resultado = new List<string> { "Acesso negado" } };
 
 
-            var Topicos = DB.Publicacaos.Include(x=>x.Comentarios).ToList();
+            var Topicos = DB.Publicacaos.Include(x=>x.Comentario).ToList();
 
             return Topicos.Count != 0 ? new Retorno { Status = true, Resultado = Topicos } : new Retorno { Status = false, Resultado = new List<string> { "Não existe nenhum topico" } };
         }

@@ -19,12 +19,14 @@ namespace Model.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Model.Comentario", b =>
+            modelBuilder.Entity("Model.Comentarios", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<Guid?>("CitacaoId");
+
+                    b.Property<Guid?>("ComentariosId");
 
                     b.Property<DateTime>("DataCadastro");
 
@@ -36,13 +38,11 @@ namespace Model.Migrations
 
                     b.Property<Guid?>("UsuarioId");
 
-                    b.Property<Guid?>("_ComentarioId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CitacaoId")
-                        .IsUnique()
-                        .HasFilter("[CitacaoId] IS NOT NULL");
+                    b.HasIndex("ComentariosId");
+
+                    b.HasIndex("PublicacaoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -95,11 +95,15 @@ namespace Model.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("Model.Comentario", b =>
+            modelBuilder.Entity("Model.Comentarios", b =>
                 {
-                    b.HasOne("Model.Comentario", "Citacao")
-                        .WithOne("_Comentario")
-                        .HasForeignKey("Model.Comentario", "CitacaoId");
+                    b.HasOne("Model.Comentarios")
+                        .WithMany("Replicas")
+                        .HasForeignKey("ComentariosId");
+
+                    b.HasOne("Model.Publicacao")
+                        .WithMany("Comentario")
+                        .HasForeignKey("PublicacaoId");
 
                     b.HasOne("Model.Usuario", "Usuario")
                         .WithMany()

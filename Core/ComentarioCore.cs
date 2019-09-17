@@ -54,7 +54,7 @@ namespace Core
 
             DB.Comentarios.Add(_Comentario);
 
-            DB.SaveChangesAsync();
+            DB.SaveChanges();
 
             return new Retorno { Status = true, Resultado = new List<string> {"Comentario cadastrado com sucesso" } };
         }
@@ -66,7 +66,10 @@ namespace Core
 
             try
             {
-                return new Retorno { Status = true, Resultado = DB.Comentarios.Where(x => x.Id == Guid.Parse(id)) };
+                var Resposta = DB.Comentarios.SingleOrDefault(x => x.Id == Guid.Parse(id));
+                Resposta.Replicas = DB.Comentarios.Where(x => x.ComentariosId == Resposta.Id).ToList();
+
+                return new Retorno { Status = true, Resultado = Resposta };
             }
             catch (Exception)
             {
@@ -88,7 +91,7 @@ namespace Core
 
                 if (comentario.CitacaoId != null)
                 {
-                    if (DB.Comentarios.SingleOrDefault(temp => temp.Id == _Comentario.ComentarioId) == null)
+                    if (DB.Comentarios.SingleOrDefault(temp => temp.Id == _Comentario.ComentariosId) == null)
                         return new Retorno { Status = false, Resultado = new List<string> { "Citação não existe" } };
                 }
                 if (comentario.Mensagem != null)

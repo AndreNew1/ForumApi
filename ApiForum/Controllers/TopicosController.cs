@@ -32,7 +32,7 @@ namespace ApiForum.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BuscarTodosTopicos([FromHeader]string tokenUsuario)
+        public IActionResult BuscarTodosTopicos([FromHeader]string tokenUsuario)
         {
             var Resultado = new PublicacaoCore(Context).BuscarTodosTopicos(tokenUsuario);
 

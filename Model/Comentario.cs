@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,13 +6,10 @@ namespace Model
 {
     public class Comentarios : Base
     {
-        [ForeignKey("Publicacao")]
+        [ForeignKey("Publicacaos")]
         public Guid? PublicacaoId { get; set; }
-        [NotMapped]
-        public Comentarios Comentario { get; set; }
         [ForeignKey("Comentarios")]
-        public Guid? ComentarioId { get; set; }
-        public Comentarios Citacao { get; set; }
+        public Guid? ComentariosId { get; set; }
         [ForeignKey("Comentarios")]
         public Guid? CitacaoId { get; set; }
         public Usuario Usuario { get; set; }

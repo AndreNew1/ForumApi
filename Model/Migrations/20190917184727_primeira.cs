@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Model.Migrations
 {
-    public partial class Primeira : Migration
+    public partial class primeira : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,10 +53,10 @@ namespace Model.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     DataCadastro = table.Column<DateTime>(nullable: false),
-                    PublicacaoId = table.Column<Guid>(nullable: false),
-                    ComentarioId = table.Column<Guid>(nullable: true),
+                    PublicacaoId = table.Column<Guid>(nullable: true),
+                    ComentariosId = table.Column<Guid>(nullable: true),
                     CitacaoId = table.Column<Guid>(nullable: true),
-                    UsuarioId = table.Column<Guid>(nullable: false),
+                    UsuarioId = table.Column<Guid>(nullable: true),
                     Mensagem = table.Column<string>(nullable: true),
                     Nota = table.Column<float>(nullable: true)
                 },
@@ -64,21 +64,15 @@ namespace Model.Migrations
                 {
                     table.PrimaryKey("PK_Comentarios", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Comentarios_Comentarios_ComentariosId",
+                        column: x => x.ComentariosId,
+                        principalTable: "Comentarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Comentarios_Publicacaos_PublicacaoId",
                         column: x => x.PublicacaoId,
                         principalTable: "Publicacaos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comentarios_Comentarios_CitacaoId",
-                        column: x => x.CitacaoId,
-                        principalTable: "Comentarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comentarios_Comentarios_ComentarioId",
-                        column: x => x.ComentarioId,
-                        principalTable: "Comentarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -89,17 +83,15 @@ namespace Model.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            
+            migrationBuilder.CreateIndex(
+                name: "IX_Comentarios_ComentariosId",
+                table: "Comentarios",
+                column: "ComentariosId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comentarios_CitacaoId",
+                name: "IX_Comentarios_PublicacaoId",
                 table: "Comentarios",
-                column: "CitacaoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comentarios_ComentarioId",
-                table: "Comentarios",
-                column: "ComentarioId");
+                column: "PublicacaoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comentarios_UsuarioId",

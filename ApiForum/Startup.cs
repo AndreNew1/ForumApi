@@ -29,7 +29,8 @@ namespace ApiForum
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMvc().AddJsonOptions(opts =>
             {
-                opts.SerializerSettings.DateFormatString = "dd/MM/yyyy"; 
+                opts.SerializerSettings.DateFormatString = "dd/MM/yyyy";
+                opts.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
 
             var config = new MapperConfiguration(opts =>
